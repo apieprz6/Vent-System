@@ -5,10 +5,12 @@
 
 RCSwitch rcSwitch = RCSwitch();
 Servo servo;
-const int TEMPSENSORPIN=A5;
+const int TEMPSENSORPIN=0;
 const int SERVOPIN = 9;
 const int TRANSMITPIN = 10;
 const int RECIEVEPIN = 0; //Actually pin 2
+const long INTERVAL = 5000;//variable used to establish refresh time for sending temp data, currently set to 2 seconds
+unsigned long previousMillis = 0;
 int setMotorTo = 0;
 int temp = 0; 
 double fahren = 0;
@@ -39,6 +41,16 @@ void loop() {
   double temp =  Thermistor(reading);
   fahren = temp * 9 / 5 + 32; 
   //put in a timer here to only send temp data say every 5 sec
+  unsigned long currentMillis = millis();
+  //Serial.println(currentMillis - previousMillis);
+  //Serial.println(INTERVAL);
+  if((currentMillis - previousMillis) >= INTERVAL){
+    previousMillis = currentMillis;
+    Serial.print("Temp = ");
+    Serial.print(fahren);
+    Serial.println("F");
+    rcSwitch.send(fahren,24);
+  }
 }
 
 int getMotorValue() {
