@@ -37,7 +37,8 @@ void loop() {
   }
   int reading = analogRead(TEMPSENSORPIN);
   double temp =  Thermistor(reading);
-  fahren = temp * 9 / 5 + 32;
+  fahren = temp * 9 / 5 + 32; 
+  //put in a timer here to only send temp data say every 5 sec
 }
 
 int getMotorValue() {
@@ -48,3 +49,10 @@ int getMotorValue() {
   return value;
 }
 
+double Thermistor(int RawADC) {
+  double Temp;
+  Temp = log(((10240000 / RawADC) - 10000));
+  Temp = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * Temp * Temp )) * Temp );
+  Temp = Temp - 273.15;
+  return Temp;
+}
