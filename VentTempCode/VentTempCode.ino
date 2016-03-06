@@ -38,8 +38,8 @@ void loop() {
     }
   }
   int reading = analogRead(TEMPSENSORPIN);
-  double temp =  Thermistor(reading);
-  fahren = temp * 9 / 5 + 32; 
+  double celsuis =  Thermistor(reading);
+  fahren = celsuis * 9 / 5 + 32; 
   //put in a timer here to only send temp data say every 5 sec
   unsigned long currentMillis = millis();
   //Serial.println(currentMillis - previousMillis);
@@ -49,7 +49,8 @@ void loop() {
     Serial.print("Temp = ");
     Serial.print(fahren);
     Serial.println("F");
-    rcSwitch.send(fahren,24);
+    double tempToSend = fahren *100;
+    rcSwitch.send((int)tempToSend,24);
   }
 }
 
