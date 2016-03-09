@@ -26,7 +26,9 @@ void setup() {
 }
 
 void loop() {
+  
   if(rcSwitch.available()){
+    Serial.println("Entered .available");
     int temp = getMotorValue();//IF THERE IS A PROBLEM WITH CODE, MAKE THIS A GLOBAL VARIABLE
     if (setMotorTo != temp) { //If there has been a transmission, motor shifts to the recieved value
       setMotorTo = temp;
