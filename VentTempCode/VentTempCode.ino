@@ -18,8 +18,8 @@ const int TEMPSENSORPIN=0;//analog pin 0
 const int SERVOPIN = 9;
 const int TRANSMITPIN = 10;
 const int RECIEVEPIN = 0; //Actually pin 2
-const long INTERVAL = 5000;//variable used to establish refresh time for sending temp data, currently set to 2 seconds
-unsigned long previousMillis = 0;
+const unsigned long long int INTERVAL = 5000;//variable used to establish refresh time for sending temp data, currently set to 2 seconds
+unsigned long long int previousMillis = 0;
 int setMotorTo = 0;
 double fahren = 0;
 
@@ -45,7 +45,7 @@ void loop() {
       servo.detach();
     }
   }
-  unsigned long currentMillis = millis();
+  unsigned long long int currentMillis = millis();
   if((currentMillis - previousMillis) >= INTERVAL){
     previousMillis = currentMillis;
     int reading = analogRead(TEMPSENSORPIN);
