@@ -27,13 +27,12 @@ int main(int argc, char *argv[]){
     
 }
 
-void sendValue(int valueToSend, char argv[]){
+void sendValue(int valueToSend){
     int PIN = 0;
     
     // Parse the firt parameter to this command as an integer
-    int code = atoi(argv[1]);
+    int code = valueToSend;
     
-    if (wiringPiSetup () == -1) return 1;
     printf("sending code[%i]\n", code);
     mySwitch = RCSwitch();
     mySwitch.enableTransmit(PIN);
