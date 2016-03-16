@@ -6,26 +6,13 @@
 //
 //
 
-#include "HubCode.h"
+//#include "HubCode.h"
 #include "RCSwitch.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 
 RCSwitch mySwitch;
-
-int main(int argc, char *argv[]){
-    double  fahren=0;
-    const int RANGE = 1;
-    while(true){
-        double recievedValue = getValue() / 10;
-        if(recievedValue > fahren+1 || recievedValue < fahren - 1){
-            fahren = recievedValue;
-            sendValue(fahren, argv[]);
-        }
-    }
-    
-}
 
 void sendValue(int valueToSend){
     int PIN = 0;
@@ -38,7 +25,7 @@ void sendValue(int valueToSend){
     mySwitch.enableTransmit(PIN);
     
     mySwitch.send(code, 24);
-
+    
 }
 
 int getValue(){
@@ -55,19 +42,33 @@ int getValue(){
     if (pulseLength != 0) mySwitch.setPulseLength(pulseLength);
     mySwitch.enableReceive(PIN);  // Receiver on interrupt 0 => that is pin #2
     
-        if (mySwitch.available()) {
+    if (mySwitch.available()) {
+        
+        int value = mySwitch.getReceivedValue();
+        
+        if (value == 0) {
+            printf("Unknown encoding\n");
+        } else {
             
-            int value = mySwitch.getReceivedValue();
-            
-            if (value == 0) {
-                printf("Unknown encoding\n");
-            } else {
-                
-                printf("Received %i\n", mySwitch.getReceivedValue() );
-                return mySwitch.getReceivedValue();
-            }
-            
-            mySwitch.resetAvailable();
+            printf("Received %i\n", mySwitch.getReceivedValue() );
+            return mySwitch.getReceivedValue();
+        }
+        
+        mySwitch.resetAvailable();
         
     }
+}
+
+int main(int argc, char *argv[]){
+    double  fahren=0;
+    const int RANGE = 1;
+    while(true){
+        double recievedValue = getValue();
+        recievedValue = recievedValue / 10;
+        if(recievedValue > fahren+1 || recievedValue < fahren - 1){
+            fahren = recievedValue;
+            sendValue(fahren);
+        }
+    }
+    
 }
