@@ -10,7 +10,9 @@
 #include "RCSwitch.h"
 #include <stdlib.h>
 #include <stdio.h>
-
+extern "C" {
+#include <wiringPi.h>
+}
 
 RCSwitch mySwitch;
 
@@ -70,5 +72,4 @@ int main(int argc, char *argv[]){
             sendValue(fahren);
         }
     }
-    
 }
