@@ -87,8 +87,8 @@ void getSignature() {
 void sendValue(int value){
   String sig = String(signature);
   String valString = String(value);
-  String tempString = sig.concat(valString);
-  rcSwitch.send(tempString.toInt(),24);
+  sig.concat(valString);
+  rcSwitch.send(sig.toInt(),24);
 }
 
 int getMotorValue() {
