@@ -64,6 +64,10 @@ int getValue(){
 int main(int argc, char *argv[]){
     double  fahren=0;
     const int RANGE = 1;
+    if(wiringPiSetup() == -1) {
+        printf("wiringPiSetup failed, exiting...");
+        return 0;
+    }
     while(true){
         double recievedValue = getValue();
         recievedValue = recievedValue / 10;
