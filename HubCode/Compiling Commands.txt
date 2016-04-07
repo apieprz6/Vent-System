@@ -2,4 +2,4 @@ COMPILES HUBCODE LINE (MUST BE IN WIRINGPI DIRECTORY)
 g++ -Wall /home/pi/Git/433Utils/RPi_utils/RCSwitch.h /home/pi/Git/433Utils/RPi_utils/RCSwitch.cpp /home/pi/Git/433Utils/RPi_utils/HubCode.cpp -lwiringPi
 
 NOT TESTED BUT SHOULD MAKE THE EXECUTABLE FILE
-g++ -Wall -o HubCode /home/pi/Git/433Utils/RPi_utils/HubCode.cpp
+g++ -Wall /home/pi/Git/433Utils/RPi_utils/RCSwitch.h /home/pi/Git/433Utils/RPi_utils/RCSwitch.cpp -o HubCode /home/pi/Git/433Utils/RPi_utils/HubCode.cpp -lwiringPi
