@@ -1,6 +1,6 @@
 //
 //  HubCode.cpp
-//  
+//
 //
 //  Created by Alex Pieprzycki on 3/11/16.
 //
@@ -36,35 +36,27 @@ int getValue(){
     cout << "IN GETVALUE " << endl;
     int PIN = 2;
     
-    if(wiringPiSetup() == -1) {
-        printf("wiringPiSetup failed, exiting...");
-        return 0;
-    }
-    
-    //int pulseLength = 0;
-    
-    // mySwitch = RCSwitch(); //uncomment if error
-    //if (pulseLength != 0) mySwitch.setPulseLength(pulseLength);
-    mySwitch.enableReceive(PIN);  // Receiver on interrupt 0 => that is pin #2
-    mySwitch.resetAvailable();
+    //    if(wiringPiSetup() == -1) {
+    //        printf("wiringPiSetup failed, exiting...");
+    //        return 0;
+    //    }
     while(1){
         //cout << mySwitch.available();
         if (mySwitch.available()) {
-            cout << mySwitch.available();
-        
             int value = mySwitch.getReceivedValue();
             if (value == 0) {
                 printf("Unknown encoding\n");
             }
             else {
-            
+                
                 printf("Received %i\n", mySwitch.getReceivedValue() );
                 return mySwitch.getReceivedValue();
             }
-        
-            mySwitch.resetAvailable();
-        
+            
+            //mySwitch.resetAvailable();
+            
         }
+        //mySwitch.resetAvailable();
     }
     
     return 0;
@@ -73,11 +65,13 @@ int getValue(){
 int main(){
     double  fahren=0;
     const int RANGE = 1;
-    mySwitch = RCSwitch();
+    int PIN = 2;
     if(wiringPiSetup() == -1) {
         printf("wiringPiSetup failed, exiting...");
         return 0;
     }
+    mySwitch = RCSwitch();
+    mySwitch.enableReceive(PIN);  // Receiver on interrupt 0 => that is pin #2
     while(true){
         double recievedValue = getValue();
         mySwitch.resetAvailable();
