@@ -58,6 +58,7 @@ void loop() {
     Serial.print("Sending ");
     Serial.println((int)tempToSend);
     rcSwitch.send((int)tempToSend,24);
+    rcSwitch.send((int)tempToSend,24);
   }
 }
 
