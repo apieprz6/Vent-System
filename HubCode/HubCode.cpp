@@ -29,6 +29,7 @@ void sendValue(int valueToSend){
     mySwitch.enableTransmit(PIN);
     
     mySwitch.send(code, 24);
+    mySwitch.send(code, 24);
     
 }
 
