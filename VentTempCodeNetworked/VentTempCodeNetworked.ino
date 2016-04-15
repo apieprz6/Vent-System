@@ -79,8 +79,8 @@ void getSignature() {
         recievedString.remove(0,String(RADIOCODE).length());
         signature = recievedString.toInt();
       }
+      rcSwitch.resetAvailable();
     }
-    rcSwitch.resetAvailable();
   }
 }
 
