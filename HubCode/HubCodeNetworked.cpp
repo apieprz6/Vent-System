@@ -11,6 +11,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
 extern "C" {
 #include <wiringPi.h>
 }
@@ -52,10 +55,31 @@ int getValue(){
     return 0;
 }
 
+int[] loadArray(int sigs[], int length){
+    ifstream in("Signatures.txt");
+    if(fout.is_open()){
+        //file opened successfully so we are here
+        cout << "File Opened successfully!!!. Writing data from array to file" << endl;
+        for(int i = 0; i<length; i++){
+            Signatures >> sigs[i]; //writing ith character of array in the file
+        }
+        cout << sigs[] << endl;
+    }
+    else //file could not be opened
+    {
+        cout << "File could not be opened." << endl;
+    }
+    return sigs[];
+}
+
 int main(){
     double  fahren=0;
     const int RANGE = 1;
+    const int RADIOCODE = 99;
     int PIN = 2;
+    //vector<int> signatures;
+    int signatures[5];
+    signatures = loadArray(signatures,5);
     if(wiringPiSetup() == -1) {
         printf("wiringPiSetup failed, exiting...");
         return 0;
@@ -65,6 +89,13 @@ int main(){
     
     while(true){
         double recievedValue = getValue();
+        if(recievedValue == 99){
+            //signatures.push_back(signatures.back()+1);
+            //cout << signatures << endl;
+            //string sigToSend = "99" + to_string(signatures.back());
+            //int codeToSend = stoi(sigToSend);
+            //sendValue(codeToSend);
+        }
         recievedValue = recievedValue / 100;
         if((recievedValue > fahren+RANGE || recievedValue < fahren - RANGE) && recievedValue!=0){
         //if(recievedValue!=0){
