@@ -3,3 +3,6 @@ g++ -Wall /home/pi/Git/433Utils/RPi_utils/RCSwitch.h /home/pi/Git/433Utils/RPi_u
 
 MAKES THE EXECUTABLE FILE
 g++ -Wall /home/pi/Git/433Utils/RPi_utils/RCSwitch.h /home/pi/Git/433Utils/RPi_utils/RCSwitch.cpp -o HubCode /home/pi/Git/433Utils/RPi_utils/HubCode.cpp -lwiringPi
+
+COMPILING HUB NETWORK CODE
+g++ -Wall /home/pi/Git/433Utils/RPi_utils/RCSwitch.h /home/pi/Git/433Utils/RPi_utils/RCSwitch.cpp -o HubCodeNetworked /home/pi/Git/433Utils/RPi_utils/HubCodeNetworked.cpp -lwiringPi
