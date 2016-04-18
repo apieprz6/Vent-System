@@ -55,7 +55,8 @@ int getValue(){
     return 0;
 }
 
-int[] loadArray(int sigs[], int length){
+int* loadArray(int length){
+    int sigs[5] = {};
     ifstream in("Signatures.txt");
     if(fout.is_open()){
         //file opened successfully so we are here
@@ -63,13 +64,13 @@ int[] loadArray(int sigs[], int length){
         for(int i = 0; i<length; i++){
             Signatures >> sigs[i]; //writing ith character of array in the file
         }
-        cout << sigs[] << endl;
+        cout << sigs << endl;
     }
     else //file could not be opened
     {
         cout << "File could not be opened." << endl;
     }
-    return sigs[];
+    return sigs;
 }
 
 int main(){
@@ -78,8 +79,7 @@ int main(){
     const int RADIOCODE = 99;
     int PIN = 2;
     //vector<int> signatures;
-    int signatures[5];
-    signatures = loadArray(signatures,5);
+    int *signatures= loadArray(5);
     if(wiringPiSetup() == -1) {
         printf("wiringPiSetup failed, exiting...");
         return 0;
