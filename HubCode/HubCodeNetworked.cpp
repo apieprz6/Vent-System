@@ -11,9 +11,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
 extern "C" {
 #include <wiringPi.h>
 }
@@ -55,31 +52,20 @@ int getValue(){
     return 0;
 }
 
-int* loadArray(int length){
-    int sigs[5] = {};
-    ifstream in("Signatures.txt");
-    if(fout.is_open()){
-        //file opened successfully so we are here
-        cout << "File Opened successfully!!!. Writing data from array to file" << endl;
-        for(int i = 0; i<length; i++){
-            Signatures >> sigs[i]; //writing ith character of array in the file
-        }
-        cout << sigs << endl;
-    }
-    else //file could not be opened
-    {
-        cout << "File could not be opened." << endl;
-    }
-    return sigs;
+double* truncateSig(double sigs[], double value){//Signatures can only be in the single digit range.
+    string modify = to_string(value);
+    string signature = modify.substr(0,1);
+    string data = modify.substr(1);
+    int sig= stoi(signature);
+    double tempData = stoi(data);
+    //put sig and tempData into an array and return the array
 }
 
 int main(){
     double  fahren=0;
-    const int RANGE = 1;
-    const int RADIOCODE = 99;
+    const int RANGE = 1.5;
     int PIN = 2;
-    //vector<int> signatures;
-    int *signatures= loadArray(5);
+    double ventData[3]={0,0,0};
     if(wiringPiSetup() == -1) {
         printf("wiringPiSetup failed, exiting...");
         return 0;
@@ -89,16 +75,11 @@ int main(){
     
     while(true){
         double recievedValue = getValue();
-        if(recievedValue == 99){
-            //signatures.push_back(signatures.back()+1);
-            //cout << signatures << endl;
-            //string sigToSend = "99" + to_string(signatures.back());
-            //int codeToSend = stoi(sigToSend);
-            //sendValue(codeToSend);
-        }
+        double *tempArr = truncateSig(ventData[], recievedValue);
+        ventData = *tempArr;
         recievedValue = recievedValue / 100;
         if((recievedValue > fahren+RANGE || recievedValue < fahren - RANGE) && recievedValue!=0){
-        //if(recievedValue!=0){
+            //if(recievedValue!=0){
             fahren = recievedValue;
             cout << fahren << endl;
             sendValue(fahren);
