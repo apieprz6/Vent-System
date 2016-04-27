@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <sstream>
 extern "C" {
 #include <wiringPi.h>
 }
@@ -21,20 +22,22 @@ RCSwitch mySwitch;
 const int SERVOOPEN = 180;
 const int SERVOCLOSED = 0;
 double vent1data = 0;
+double vent1dataOld = 0;
 double vent2data = 0;
+double vent2dataOld = 0;
 //const double DESIREDTEMP = 70;
 
-string to_string (int Number )
+string to_string (int num )
 {
     ostringstream ss;
-    ss << Number;
+    ss << num;
     return ss.str();
 }
 
-double stoi ( string Text )
+int stoi ( string Text )
 {
     istringstream ss(Text);
-    T result;
+    int result;
     return ss >> result ? result : 0;
 }
 
@@ -69,7 +72,7 @@ int getValue(){
         }
         mySwitch.resetAvailable();
     }
-    return 0;
+    return -1;
 }
 
 void truncateSig(double value){//Signatures can only be in the single digit range.
@@ -78,38 +81,44 @@ void truncateSig(double value){//Signatures can only be in the single digit rang
     string data = modify.substr(1);
     cout<<data<<endl;
     int sig= stoi(signature);
-    double tempData = std::stoi(data)/100;
+    double tempData = (double)stoi(data)/100;
     cout<<"vent number: " << sig << " temp: " << tempData << endl;
     if(sig == 1){
         vent1data = tempData;
-        cout << vent1data << endl;
+        cout << "Vent 1 = " << vent1data << endl;
     }
-    else{
+    else if(sig == 2){
         vent2data = tempData;
-        cout << vent2data << endl;
+        cout << "Vent 2 = " << vent2data << endl;
     }
 }
 
 int concat (int sig, int servo){
-    string signature = std::to_string(sig);
-    string servopos = std::to_string(servo);
+    string signature = to_string(sig);
+    string servopos = to_string(servo);
     string code = signature + servopos;
-    return std::stoi(code);
+    return stoi(code);
 }
 
 void algorithm(double desiredTemp){
     double RANGE = 1;
-    if(vent1data > desiredTemp + RANGE){
-        sendValue(concat(1,SERVOOPEN));
+    if(vent1data != vent1dataOld){
+        vent1dataOld = vent1data;
+        if(vent1data > desiredTemp + RANGE){
+            sendValue(concat(1,SERVOOPEN));
+        }
+        else{
+            sendValue(concat(1,SERVOCLOSED));
+        }
     }
-    else{
-        sendValue(concat(1,SERVOCLOSED));
-    }
-    if(vent2data > desiredTemp + RANGE){
-        sendValue(concat(2,SERVOOPEN));
-    }
-    else{
-        sendValue(concat(2,SERVOCLOSED));
+    if(vent2data != vent2dataOld){
+        vent2dataOld = vent2data;
+        if(vent2data > desiredTemp + RANGE){
+            sendValue(concat(2,SERVOOPEN));
+        }
+        else{
+            sendValue(concat(2,SERVOCLOSED));
+        }
     }
 }
 
@@ -124,22 +133,17 @@ int main(){
     }
     mySwitch = RCSwitch();
     mySwitch.enableReceive(PIN);  // Receiver on interrupt 0 => that is pin #2
-    cout << "Enter desired temperature";
+    cout << "Enter desired temperature: ";
     cin >> desiredTemp;
-    cout << endl;
+    cout << "Desired temp: " << desiredTemp << endl;
     
     while(true){
-        //double recievedValue = getValue();
-        //double *tempArr = truncateSig(ventData[], recievedValue);
-        //ventData = *tempArr;
-        truncateSig(getValue());
-        algorithm(desiredTemp);
-        //recievedValue = recievedValue / 100;
-        //if((recievedValue > fahren+RANGE || recievedValue < fahren - RANGE) && recievedValue!=0){
-            //if(recievedValue!=0){
-            //fahren = recievedValue;
-            //cout << fahren << endl;
-            //sendValue(fahren);
-        //}
+        int recievedValue = getValue();
+        if(recievedValue != -1){
+            truncateSig(recievedValue);
+            //cout<<"Left TruncateSig"<<endl;
+            algorithm(desiredTemp);
+            //cout<<"Left algorithm"<<endl;
+        }
     }
 }
