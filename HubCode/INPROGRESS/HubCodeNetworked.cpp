@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include <string>
 extern "C" {
 #include <wiringPi.h>
 }
@@ -20,25 +19,9 @@ using namespace std;
 RCSwitch mySwitch;
 const int SERVOOPEN = 180;
 const int SERVOCLOSED = 0;
-double vent1data = 0;
-double vent2data = 0;
-//const double DESIREDTEMP = 70;
+const int SERVOMID = 90;
 
-string to_string (int Number )
-{
-    ostringstream ss;
-    ss << Number;
-    return ss.str();
-}
-
-double stoi ( string Text )
-{
-    istringstream ss(Text);
-    T result;
-    return ss >> result ? result : 0;
-}
-
-void sendValue(int valueToSend){
+void sendValue(Vent vent){
     int PIN = 0;
     
     // Parse the firt parameter to this command as an integer
@@ -72,45 +55,25 @@ int getValue(){
     return 0;
 }
 
-void truncateSig(double value){//Signatures can only be in the single digit range.
+double* truncateSig(double sigs[], double value){//Signatures can only be in the single digit range.
     string modify = to_string(value);
     string signature = modify.substr(0,1);
-    string data = modify.substr(1);
+    string data = modify.substr(1)/100;
     cout<<data<<endl;
     int sig= stoi(signature);
-    double tempData = std::stoi(data)/100;
+    double tempData = stoi(data);
     cout<<"vent number: " << sig << " temp: " << tempData << endl;
-    if(sig == 1){
-        vent1data = tempData;
-        cout << vent1data << endl;
-    }
-    else{
-        vent2data = tempData;
-        cout << vent2data << endl;
-    }
+    sigs[sig] = tempData;
+    return sigs;
 }
 
-int concat (int sig, int servo){
-    string signature = std::to_string(sig);
-    string servopos = std::to_string(servo);
-    string code = signature + servopos;
-    return std::stoi(code);
-}
-
-void algorithm(double desiredTemp){
-    double RANGE = 1;
-    if(vent1data > desiredTemp + RANGE){
-        sendValue(concat(1,SERVOOPEN));
+void algorithm(double data[], double desiredTemp){
+    const RANGE1 = .5;
+    const RANGE2 = 1;
+    if((data[1] < desiredTemp + RANGE1 || data[1] > desiredTemp - RANGE1) && (data[2] > desiredTemp + RANGE2)){
+        
     }
-    else{
-        sendValue(concat(1,SERVOCLOSED));
-    }
-    if(vent2data > desiredTemp + RANGE){
-        sendValue(concat(2,SERVOOPEN));
-    }
-    else{
-        sendValue(concat(2,SERVOCLOSED));
-    }
+    //FINISH ALGORITHM METHOD
 }
 
 int main(){
@@ -118,6 +81,7 @@ int main(){
     //double  fahren=0;
     //const int RANGE = 1.5;
     int PIN = 2;
+    double ventData[3]={0,0,0};
     if(wiringPiSetup() == -1) {
         printf("wiringPiSetup failed, exiting...");
         return 0;
@@ -132,8 +96,7 @@ int main(){
         //double recievedValue = getValue();
         //double *tempArr = truncateSig(ventData[], recievedValue);
         //ventData = *tempArr;
-        truncateSig(getValue());
-        algorithm(desiredTemp);
+        algorithm(truncateSig(ventData[],getValue()), desiredTemp);
         //recievedValue = recievedValue / 100;
         //if((recievedValue > fahren+RANGE || recievedValue < fahren - RANGE) && recievedValue!=0){
             //if(recievedValue!=0){
