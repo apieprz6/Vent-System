@@ -8,7 +8,7 @@
 void setup() {
   Serial.begin(9600);
   //UNCOMMENT NEXT LINE TO RESET EEPROM/SET UP EEPROM
-  //EEPROM.write(0,0);
+  //EEPROM.write(0,1);
 }
 
 void loop() {
