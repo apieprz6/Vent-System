@@ -49,7 +49,7 @@ void setup() {
 void loop() {
   if (rcSwitch.available()) { //Checks if radio has recieved transmissions
     int temp = getMotorValue();//IF THERE IS A PROBLEM WITH CODE, MAKE THIS A GLOBAL VARIABLE
-    if (temp!=-1 || setMotorTo != temp) { //If there has been a transmission, motor shifts to the recieved value
+    if (setMotorTo != temp) { //If there has been a transmission, motor shifts to the recieved value
       setMotorTo = temp;
       servo.attach(SERVOPIN);
       servo.write(setMotorTo);
