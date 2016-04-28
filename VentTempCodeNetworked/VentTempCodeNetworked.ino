@@ -12,10 +12,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define aref_voltage 3.3
 
 RCSwitch rcSwitch = RCSwitch();
 Servo servo;
 const int TEMPSENSORPIN = 0; //analog pin 0
+const int TEMPPIN = 1; //Pin for tmp36
 const int SERVOPIN = 9;
 const int TRANSMITPIN = 10;
 const int RECIEVEPIN = 0; //Actually pin 2
@@ -58,14 +60,14 @@ void loop() {
   unsigned long long int currentMillis = millis();
   if ((currentMillis - previousMillis) >= INTERVAL) {
     previousMillis = currentMillis;
-    int reading = analogRead(TEMPSENSORPIN);
-    double celsius =  Thermistor(reading);
-    fahren = celsius * 9 / 5 + 32;
+//    int reading = analogRead(TEMPSENSORPIN);
+//    double celsius =  Thermistor(reading);
+//    fahren = celsius * 9 / 5 + 32;
     Serial.print("Temp = ");
-    Serial.print(fahren);
+    Serial.print(tmp36());
     Serial.println("F");
-    double tempToSend = fahren * 100;
-    sendValue((int)tempToSend);
+    double tempToSend = tmp36() * 100;
+    sendValue((int)tempToSend);//DUPLICATE THIS LINE TO INCREASE SENDING FREQUENCY
     }
 }
 
@@ -113,10 +115,20 @@ int getMotorValue() {
   return setMotorTo;
 }
 
-double Thermistor(int RawADC) {
-  double Temp;
-  Temp = log(((10240000 / RawADC) - 10000));
-  Temp = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * Temp * Temp )) * Temp );
-  Temp = Temp - 273.15;
-  return Temp;
+//double Thermistor(int RawADC) {
+//  double Temp;
+//  Temp = log(((10240000 / RawADC) - 10000));
+//  Temp = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * Temp * Temp )) * Temp );
+//  Temp = Temp - 273.15;
+//  return Temp;
+//}
+
+double tmp36(){
+  int tempReading;
+  tempReading = analogRead(TEMPPIN);
+  double voltage = tempReading * aref_voltage;
+  voltage /= 1024.0;
+  double temperatureC = (voltage - 0.5) * 100 ;
+  double temperatureF = (temperatureC * 9.0 / 5.0) + 32.0;
+  return temperatureF;
 }
